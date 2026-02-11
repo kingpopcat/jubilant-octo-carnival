@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mafia Merchant Shop</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #e0e0e0; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: #2d2d2d; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h1, h2, h3 { color: #f39c12; margin-top: 0; }
+        .auth-section { background: #3d3d3d; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 5px solid #f39c12; text-align: center; }
+        input[type="password"] { padding: 10px; border-radius: 4px; border: none; width: 200px; font-size: 16px; }
+        button { padding: 10px 20px; background: #f39c12; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
+        button:hover { background: #e67e22; }
+        .shop-section { display: none; margin-top: 20px; }
+        .category { margin-bottom: 25px; border: 1px solid #444; padding: 20px; border-radius: 8px; background: #252525; }
+        select { width: 100%; padding: 12px; margin: 10px 0; background: #3d3d3d; color: white; border: 1px solid #555; border-radius: 4px; font-size: 14px; cursor: pointer; }
+        .item-box { background: #333; padding: 15px; border-radius: 6px; margin-top: 15px; border-left: 3px solid #27ae60; }
+        .desc-text { font-size: 0.9em; color: #ccc; }
+        .price-tag { color: #2ecc71; font-weight: bold; }
+        .stats { color: #3498db; font-family: monospace; }
+        hr { border: 0; border-top: 1px solid #444; margin: 20px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Merchant Shop</h1>
+
+    <div class="auth-section" id="auth-area">
+        <h3>Enter Merchant Password</h3>
+        <input type="password" id="pass" placeholder="Password (1234)">
+        <button onclick="checkPass()">Access Store</button>
+        <p id="err" style="color: #e74c3c; display: none; margin-top: 10px;">Access Denied: Incorrect Password</p>
+    </div>
+
+    <div id="shop" class="shop-section">
+        <p><em>Merchant (60% Revenue) | Assistant (30% Revenue)</em></p>
+        <hr>
+
+        <div class="category">
+            <h2>⛏️ Mining System</h2>
+            <p class="desc-text">Requires a Pickaxe. 5 free turns/day. Extra turns: $2/stone.</p>
+            <button onclick="alert('Pickaxe purchased! You can now mine during your turn.')">Buy Starter Pickaxe ($25)</button>
+            
+            <select id="miningUpgrades" onchange="updateUpgradeInfo()">
+                <option value="">-- View/Buy Upgrades --</option>
+                <option value="lvl2">Lvl 2: Durable Blade ($4) - 1.25x Odds + 1 Free Turn</option>
+                <option value="lvl3">Lvl 3: Quality Handle ($4) - 1.5x Odds + 1 Free Turn</option>
+                <option value="lvl4">Lvl 4: Tool Remake ($8) - 3.0x Odds + 10 Free Turns Total</option>
+            </select>
+            <button onclick="alert('Upgrade confirmed by Merchant!')">Purchase Selected Upgrade</button>
+
+            <div class="item-box">
+                <h4>Ore Probabilities & Rewards</h4>
+                <select onchange="showOre(this.value)">
+                    <option value="">-- Select a Stone to Inspect --</option>
+                    <option value="basic">Basic Stone (Common)</option>
+                    <option value="coopper">Coopper (Rare)</option>
+                    <option value="mooloolite">Mooloolite (Rare)</option>
+                    <option value="gold">Moldy Gold (Epic)</option>
+                    <option value="zinc">Slinky Zinc (Legendary)</option>
+                    <option value="goose">Goosecreekite (Mythic)</option>
+                </select>
+                <div id="ore-details" class="desc-text" style="margin-top: 10px;">Select a stone to see its perks and drop rates per level.</div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>🌱 Farming System</h2>
+            
+            <h3>Seeds (Takes 2 Days to Grow)</h3>
+            <select>
+                <option value="">-- Buy Seeds --</option>
+                <option value="br">Broccoli Seed ($1) - Low Defense</option>
+                <option value="km">Kumquat Seed ($2) - Med Defense</option>
+                <option value="ly">Lychee Seed ($3) - High Defense + Revenge Trap</option>
+                <option value="or">Orange Seed ($6) - Max Defense + Orange Gods Perk</option>
+            </select>
+
+            <h3>Fertilizers (Speed up Growth)</h3>
+            <select>
+                <option value="">-- Buy Fertilizer --</option>
+                <option value="f1">Natural Fertilizer ($1) - Grow 1 day faster (Side Effect: Stinky +6.6% death risk)</option>
+                <option value="f2">Miracle Heighten ($2) - Grow 1 day faster (No Side Effects)</option>
+                <option value="f3">Kumquat Extract ($3) - Instant Growth + 1 Extra Fruit/Day</option>
+            </select>
+
+            <h3>Full Plants (Instant Harvest)</h3>
+            <select>
+                <option value="">-- Buy Full Tree --</option>
+                <option value="t1">Broccoli Plant ($5)</option>
+                <option value="t2">Kumquat Tree ($7) - (Makes Orange Tree half price)</option>
+                <option value="t3">Lychee Tree ($9) - (Special harvests every other day)</option>
+                <option value="t4">Orange Tree ($15) - (Earn $2 per harvest)</option>
+            </select>
+        </div>
+
+        <div class="category">
+            <h2>📦 Other Services</h2>
+            <p class="desc-text">Special items and discounts require Narrator approval.</p>
+            <button onclick="alert('Discount Applied: Merchant/Assistant must verify player name.')">Apply Role Discount</button>
+            <button style="margin-left: 10px;" onclick="alert('Coupon Used: One item upgraded 1 level.')">Assistant's Upgrade Coupon</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkPass() {
+        const p = document.getElementById('pass').value;
+        if(p === "1234") {
+            document.getElementById('shop').style.display = 'block';
+            document.getElementById('auth-area').style.display = 'none';
+        } else {
+            document.getElementById('err').style.display = 'block';
+        }
+    }
+
+    function showOre(ore) {
+        const detail = document.getElementById('ore-details');
+        const data = {
+            basic: "<b>Basic Stone:</b> Sell for $1-2. Keep for 2.5% Mafia fail chance.<br><span class='stats'>Drop Rates: L1: 50% | L2: 37.5% | L3: 25% | L4: 0%</span>",
+            coopper: "<b>Coopper:</b> Sell for $4-5. 33% chance for Chicken Coop ($1-2/day + 5% defense eggs).<br><span class='stats'>Drop Rates: L1: 20% | L2: 25% | L3: 30% | L4: 41%</span>",
+            mooloolite: "<b>Mooloolite:</b> Sell for $5-6. 33% chance for Cow (Donate $1 for Chocolate Milk: 15% defense stack).<br><span class='stats'>Drop Rates: L1: 15% | L2: 18.75% | L3: 22.5% | L4: 30%</span>",
+            gold: "<b>Moldy Gold:</b> Sell for $7-9. Use on player to block their ability (80% chance). You gain +5% death risk.<br><span class='stats'>Drop Rates: L1: 10% | L2: 12.5% | L3: 15% | L4: 20%</span>",
+            zinc: "<b>Slinky Zinc:</b> Sell for $12-14. Eat to stretch and peek at one role. Permanent +30% defense stack.<br><span class='stats'>Drop Rates: L1: 4% | L2: 5% | L3: 6% | L4: 6%</span>",
+            goose: "<b>Goosecreekite:</b> Sell for $20-25. Summons Golden Goose ($8/day + Change role for 2 turns). Immortality if polished ($5).<br><span class='stats'>Drop Rates: L1: 1% | L2: 1.25% | L3: 1.5% | L4: 3%</span>"
+        };
+        detail.innerHTML = data[ore] || "Select a stone to see its perks and drop rates per level.";
+    }
+</script>
+
+</body>
+</html>
